@@ -1,2 +1,2 @@
 # bashscripts
-da
+че
