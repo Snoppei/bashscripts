@@ -1,0 +1,96 @@
+#!/bin/bash
+
+# Инициализация переменных
+num_outputs=1
+timeout=1
+
+# Обработка аргументов командной строки
+while [ $# -gt 0 ]; do
+  case "$1" in
+    -n)
+      num_outputs="$2"
+      shift 2
+      ;;
+    -t)
+      timeout="$2"
+      shift 2
+      ;;
+    --)
+      shift
+      break
+      ;;
+    *)
+      echo "Неверный аргумент: $1"
+      exit 1
+      ;;
+  esac
+done
+
+# Получаем текст для вывода из оставшихся аргументов
+text_to_display="$@"
+
+# Выводим текст заданное количество раз с заданным интервалом времени
+for ((i = 0; i < num_outputs; i++)); do
+  echo "$text_to_display"
+  sleep "$timeout"
+done
+
+
+
+#!/bin/bash
+
+num_outputs=1
+timeout=1
+
+while getopts "n:t:" opt; do
+  case "$opt" in
+    n)
+      num_outputs="$OPTARG"
+      ;;
+    t)
+      timeout="$OPTARG"
+      ;;
+    \?)
+      echo "Неверный аргумент: -$OPTARG" >&2
+      exit 1
+      ;;
+  esac
+done
+
+# Сдвигаем аргументы, чтобы получить текст для вывода
+shift $((OPTIND - 1))
+text_to_display="$@"
+
+# Выводим текст заданное количество раз с заданным интервалом времени
+for ((i = 0; i < num_outputs; i++)); do
+  echo "$text_to_display"
+  sleep "$timeout"
+done
+
+
+
+#!/bin/bash
+
+# Пример вызова: ./sort_args.sh apple banana cherry
+
+# Получаем аргументы в массив
+args=("$@")
+
+# Реализуем сортировку методом пузырька
+n=${#args[@]}
+for ((i = 0; i < n - 1; i++)); do
+  for ((j = 0; j < n - i - 1; j++)); do
+    if [[ "${args[j]}" > "${args[j+1]}" ]]; then
+      # Меняем элементы местами
+      temp="${args[j]}"
+      args[j]="${args[j+1]}"
+      args[j+1]="$temp"
+    fi
+  done
+done
+
+# Выводим отсортированные аргументы
+for arg in "${args[@]}"; do
+  echo "$arg"
+done
+
